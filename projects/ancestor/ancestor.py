@@ -96,10 +96,10 @@ class Graph():
             path = stack.pop()
             vertex = path[-1]
         #    If not visited
+            if vertex == destination_vertex:
+                # Do the thing!
+                return path
             if vertex not in visited:
-                if vertex == destination_vertex:
-                    # Do the thing!
-                    return path
                 visited.add(vertex)
         #       For each edge in the item
                 for next_vert in self.get_neighbors(vertex):
@@ -108,6 +108,8 @@ class Graph():
                     new_path = list(path)
                     new_path.append(next_vert)
                     stack.push(new_path)
+
+    # if len(new_path) <= 1:
 
 
 def earliest_ancestor(ancestors, starting_node):
@@ -126,18 +128,15 @@ def earliest_ancestor(ancestors, starting_node):
 
     for ancestor in ancestors:
 
-        path = graph.dfs(ancestor[0], starting_node)
+        path = graph.dfs(starting_node, ancestor[0])
+
+        print('Path:', path)
 
         if path != None and len(path) > len(new_path):
 
             new_path = path.copy()
 
             print('Updated path:', new_path)
-
-    if len(new_path) <= 1:
-        return -1
-
-    return new_path[0]
 
 
 ancestors = [(1, 3), (2, 3), (3, 6), (5, 6), (5, 7),
