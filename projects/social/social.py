@@ -1,6 +1,44 @@
+import random
+
+
+class Queue():
+    def __init__(self):
+        self.queue = []
+
+    def enqueue(self, value):
+        self.queue.append(value)
+
+    def dequeue(self):
+        if self.size() > 0:
+            return self.queue.pop(0)
+        else:
+            return None
+
+    def size(self):
+        return len(self.queue)
+
+
+class Stack():
+    def __init__(self):
+        self.stack = []
+
+    def push(self, value):
+        self.stack.append(value)
+
+    def pop(self):
+        if self.size() > 0:
+            return self.stack.pop()
+        else:
+            return None
+
+    def size(self):
+        return len(self.stack)
+
+
 class User:
     def __init__(self, name):
         self.name = name
+
 
 class SocialGraph:
     def __init__(self):
@@ -14,11 +52,14 @@ class SocialGraph:
         """
         if user_id == friend_id:
             print("WARNING: You cannot be friends with yourself")
+            return False
         elif friend_id in self.friendships[user_id] or user_id in self.friendships[friend_id]:
             print("WARNING: Friendship already exists")
+            return False
         else:
             self.friendships[user_id].add(friend_id)
             self.friendships[friend_id].add(user_id)
+            return True
 
     def add_user(self, name):
         """
@@ -45,8 +86,29 @@ class SocialGraph:
         # !!!! IMPLEMENT ME
 
         # Add users
+        for i in range(num_users):
+            self.add_user(i + 1)
 
         # Create friendships
+
+        # potential_friends = (num_users + avg_friendships)
+        # total_friendships = 0
+        # collisions = 0
+
+        # while total_friendships < potential_friends:
+        #     user_id = random.ranint(1, self.last_id)
+        #     friend_id = random.ranint(1, self.last_id)
+
+        #     if self.add_friendship(user_id, friend_id):
+        #         total_friendships += 2
+        #     else:
+        #         collisions += 1
+
+        potential_friends = []
+
+        for user in self.users:
+            for friend in range(user+1, self.last_id+1):
+                potential_friends.append((user, friend))
 
     def get_all_social_paths(self, user_id):
         """
@@ -59,6 +121,24 @@ class SocialGraph:
         """
         visited = {}  # Note that this is a dictionary, not a set
         # !!!! IMPLEMENT ME
+
+        queue = Queue()
+
+        queue.enqueue([user_id])
+
+        while queue.size():
+            path = queue.dequeue()
+
+            current_friend = path[-1]
+
+            if current_friend not in visited:
+                visited[current_friend] = path
+
+                for friend_id in self.friendships[current_friend]:
+                    new_path = list(path)
+                    new_path.append(friend_id)
+                    queue.enqueue(new_path)
+
         return visited
 
 
